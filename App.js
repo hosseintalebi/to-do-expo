@@ -1,11 +1,18 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import TodoList from "./src/components/TodoList";
+import { Provider } from "unstated";
+import TodoListContainer from "./src/containers/TodoList";
+
+let todoList = new TodoListContainer();
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        <Provider inject={[todoList]}>
+          <TodoList />
+        </Provider>
       </View>
     );
   }
@@ -13,9 +20,10 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    // flex: 1,
+    // backgroundColor: "#fff",
+    alignItems: "center",
+    marginTop: 50
+    //justifyContent: "center"
+  }
 });
