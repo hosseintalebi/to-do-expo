@@ -21,8 +21,9 @@ class TodoList extends Component {
   }
 
   renderTodoItems(todoListProp) {
-    const { todoList, toggleDone, removeTodo, filter } = todoListProp;
-    const filteredList = _.filter(todoList, todo => {
+    const { state, toggleDone, removeTodo, filter } = todoListProp;
+    console.log(state.todoList);
+    const filteredList = _.filter(state.todoList, todo => {
       switch (filter) {
         case ACTIVE:
           return !todo.done;
@@ -45,8 +46,8 @@ class TodoList extends Component {
   }
 
   addTodo(todoListProp) {
-    return () => {
-      const { addTodo, inputText, inputTextChanged } = todoListProp;
+    return inputText => {
+      const { addTodo, inputTextChanged } = todoListProp;
       const { next_todo_id } = this.state;
       if (!!inputText && !!inputText.trim()) {
         addTodo({ text: inputText.trim(), id: next_todo_id });
@@ -57,7 +58,8 @@ class TodoList extends Component {
   }
 
   renderFooter(todoListProp) {
-    const { todoList, changeFilter, filter } = todoListProp;
+    const { state, changeFilter } = todoListProp;
+    const { filter, todoList } = state;
     if (_.size(todoList)) {
       return (
         <View style={styles.footer}>
@@ -66,7 +68,7 @@ class TodoList extends Component {
               ...styles.filterBotton,
               ...(filter === ALL ? styles.filterBottonActive : {})
             }}
-            onClick={() => changeFilter(ALL)}
+            onPress={() => changeFilter(ALL)}
           >
             <Text>All</Text>
           </View>
@@ -75,7 +77,7 @@ class TodoList extends Component {
               ...styles.filterBotton,
               ...(filter === COMPLETED ? styles.filterBottonActive : {})
             }}
-            onClick={() => changeFilter(COMPLETED)}
+            onPress={() => changeFilter(COMPLETED)}
           >
             <Text>Completed</Text>
           </View>
@@ -84,7 +86,7 @@ class TodoList extends Component {
               ...styles.filterBotton,
               ...(filter === ACTIVE ? styles.filterBottonActive : {})
             }}
-            onClick={() => changeFilter(ACTIVE)}
+            onPress={() => changeFilter(ACTIVE)}
           >
             <Text>Active</Text>
           </View>
@@ -95,25 +97,26 @@ class TodoList extends Component {
   render() {
     return (
       <Subscribe to={[TodoListContainer]}>
-        {todoList => (
-          <View style={styles.todoList}>
-            <Title>
-              <Text style={styles.title}>ToDo</Text>
-            </Title>
-            <View style={styles.inputWrapper}>
-              <TodoInput
-                inputText={todoList.inputText}
-                inputTextChanged={todoList.inputTextChanged}
-                addTodo={this.addTodo(todoList)}
-              />
+        {todoList => {
+          return (
+            <View style={styles.todoList}>
+              <Title>
+                <Text style={styles.title}>ToDo</Text>
+              </Title>
+              <View style={styles.inputWrapper}>
+                <TodoInput
+                  inputText={todoList.state.inputText}
+                  inputTextChanged={todoList.inputTextChanged}
+                  addTodo={this.addTodo(todoList)}
+                />
+              </View>
+              <View style={styles.todoItemContainer}>
+                {this.renderTodoItems(todoList)}
+              </View>
+              {this.renderFooter(todoList)}
             </View>
-            <View style={styles.todoItemContainer}>
-              {this.renderTodoItems(todoList)}
-            </View>
-            <Text>{this.state.TodoList}</Text>
-            {this.renderFooter(todoList)}
-          </View>
-        )}
+          );
+        }}
       </Subscribe>
     );
   }
@@ -147,11 +150,15 @@ const styles = StyleSheet.create({
 
   footer: {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "space-between"
   },
   filterBotton: {
-    margin: "5px 10px",
-    padding: "7px 10px",
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 10,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 3

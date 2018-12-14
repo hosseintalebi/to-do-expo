@@ -21,12 +21,10 @@ export default class TodoInput extends Component {
   }
 
   onChangeInputText(text) {
-    console.log(text);
     this.props.inputTextChanged(text);
   }
 
   onSubmitEditing() {
-    console.log(this.props.inputText);
     this.props.addTodo(this.props.inputText);
   }
 }

@@ -7,13 +7,29 @@ export default function({ todo, toggleDone, removeTodo }) {
     <View style={styles.todoItem}>
       <CheckBox
         value={todo.done}
-        onClick={() => toggleDone(todo.id, !todo.done)}
+        onPress={() => {
+          console.log("check");
+          toggleDone(todo);
+        }}
       />
       <View style={styles[todo.done ? "todoTextDone" : "todoText"]}>
         <Text>{todo.text}</Text>
       </View>
-      <View style={styles.removeTodo} onClick={() => removeTodo(todo.id)}>
-        <Text>X</Text>
+      <View
+        style={styles.removeTodo}
+        onPress={() => {
+          console.log("del");
+          removeTodo(todo.id);
+        }}
+      >
+        <Text
+          onPress={() => {
+            console.log("del");
+            removeTodo(todo.id);
+          }}
+        >
+          X
+        </Text>
       </View>
     </View>
   );
@@ -22,11 +38,15 @@ export default function({ todo, toggleDone, removeTodo }) {
 const styles = StyleSheet.create({
   todoItem: {
     display: "flex",
+    flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#ededed",
     fontSize: 24,
     alignItems: "center",
-    padding: "10px 5px"
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 5,
+    paddingLeft: 5
   },
   todoTextDone: {
     textDecorationLine: "line-through",
